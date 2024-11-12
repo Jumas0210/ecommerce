@@ -6,7 +6,7 @@ import { Items } from './components/Items';
 
 function App() {
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   useEffect(()=>{
     fetch("http://localhost:5000/items")

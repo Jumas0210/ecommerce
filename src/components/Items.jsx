@@ -2,7 +2,7 @@ export function Items({items}){
     return(
         <main className="items">
             <ul>
-                {items.map(item=>(
+                {items && items.map(item=>(
                     <li key={item._id}>
                         <img src={item.image} alt={item.model} />
                         <div>
