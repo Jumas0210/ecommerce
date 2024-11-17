@@ -5,49 +5,34 @@ import "../components/cart.css";
 import { Header } from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/userUser";
+import { Tarjet } from "../components/Tarjet";
+import "../components/tarjet.css";
 
 export function Cart() {
-  const { cart, clearCart, addToCart } = useCart();
-
-  const {user} =useUser();
-
-  console.log(cart);
-
+  const { cart, clearCart, addToCart, totalQuantity, total } = useCart();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const back = () => {
     clearCart();
-
     navigate("/items");
   };
 
   const next = () => {
-
     const itemInCart = cart.findIndex((product) => product);
 
-    console.log(itemInCart);
+    if (itemInCart >= 0) {
+      console.log(user);
 
-    if(itemInCart>= 0){
-
-        console.log(user);
-
-        if(user.total <= user.budget){
-            clearCart();
-
-            alert("Compra confirmada");
-        }
-        else{
-
-            alert("El presupuesto es menor al total");
-
-        }
-        
+      if (total <= user.budget) {
+        clearCart();
+        alert("Compra confirmada");
+      } else {
+        alert("El presupuesto es menor al total");
+      }
+    } else {
+      alert("No hay nada en el carrito");
     }
-    else{
-        alert("No hay nada en el carrito");
-    }
-
-
   };
 
   return (
@@ -59,25 +44,32 @@ export function Cart() {
         nameRight={"confirmar"}
       />
 
-      <section className="product-list">
-        <h2>Tus productos</h2>
-        <ul>
-          {cart.map((item) => (
-            <Card item={item} setSelectedItem={addToCart} />
-          ))}
-        </ul>
-      </section>
-      {/* <section>
-          <Tarjet/>
-      </section>
-    */}
-      <section>
-        <Details cart={cart} clearCart={clearCart} />
-      </section>
+      <div className="cart-container">
+        <div className="cart-content">
+          <div className="cart-left">
+            <section className="product-list">
+              <h2>Tus productos</h2>
+              <ul>
+                {cart.map((item) => (
+                  <Card key={item.id} item={item} setSelectedItem={addToCart} />
+                ))}
+              </ul>
+            </section>
 
-      <section>
-        <button onClick={clearCart}>limpiar</button>
-      </section>
+            <section className="cart-details">
+              <Details totalQuantity={totalQuantity} total={total} />
+            </section>
+
+            <section className="cart-actions">
+              <button onClick={clearCart}>Limpiar</button>
+            </section>
+          </div>
+
+          <div className="cart-right">
+            <Tarjet />
+          </div>
+        </div>
+      </div>
     </>
   );
 }

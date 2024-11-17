@@ -6,7 +6,7 @@ import { useCart } from "../hooks/useCart";
 import { useNavigate } from "react-router-dom";
 
 // Componente de Filtros
-function Filters({ onCategoryChange, onBrandChange }) {
+function Filters({ onCategoryChange, onBrandChange, cleanFilters }) {
   return (
     <div className="filters">
       <select
@@ -30,6 +30,9 @@ function Filters({ onCategoryChange, onBrandChange }) {
         <option value="Adidas">Adidas</option>
         <option value="Puma">Puma</option>
       </select>
+      <section>
+        <button onClick={cleanFilters} >Limpiar</button>
+      </section>
     </div>
   );
 }
@@ -47,7 +50,7 @@ export function Items() {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch("http://localhost:5000/items")
+    fetch("http://localhost:5000/items?p=0")
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -72,6 +75,11 @@ export function Items() {
     navigate("/cart");
   };
 
+  const cleanFilters = () =>{
+    setBrand("");
+    setCategory("");
+  }
+
   return (
     <main className="view">
       <Header
@@ -83,7 +91,7 @@ export function Items() {
       <section className="product-view">
         <section className="product-list">
           <h2>Nuestros Zapatos</h2>
-          <Filters onCategoryChange={setCategory} onBrandChange={setBrand} />
+          <Filters onCategoryChange={setCategory} onBrandChange={setBrand} cleanFilters={cleanFilters} />
           <ul>
             {filteredItems.map((item) => (
               <Card item={item} setSelectedItem={setSelectedItem} />

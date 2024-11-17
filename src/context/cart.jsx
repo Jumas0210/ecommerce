@@ -4,15 +4,19 @@ export const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const addToCart = (item) => {
     const itemInCart = cart.findIndex((product) => product._id === item._id);
 
-    console.log(itemInCart);
+    const priceFormat = parseInt(item.price);
 
     if (itemInCart >= 0) {
       const newCart = structuredClone(cart);
       newCart[itemInCart].quantity += 1;
+      setTotalQuantity(totalQuantity + 1);
+      setTotal(total + priceFormat);
       return setCart(newCart);
     }
 
@@ -23,11 +27,20 @@ export function CartProvider({ children }) {
         quantity: 1,
       },
     ]);
+
+    console.log(item);
+    console.log(cart);
+
+    setTotalQuantity(totalQuantity + 1);
+    setTotal(total + priceFormat);
   };
 
   const clearCart = () => {
     setCart([]);
+    setTotalQuantity(0);
+    setTotal(0);
   };
+
 
   return (
     <CartContext.Provider
@@ -35,6 +48,8 @@ export function CartProvider({ children }) {
         cart,
         addToCart,
         clearCart,
+        totalQuantity,
+        total
       }}
     >
       {children}

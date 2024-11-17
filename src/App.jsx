@@ -14,7 +14,6 @@ function App() {
     fetch("http://localhost:5000/items").then((data) => setData(data));
   }, []);
 
-  console.log(data);
 
   return (
     <BrowserRouter>
