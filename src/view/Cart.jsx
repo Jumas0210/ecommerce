@@ -7,15 +7,74 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/userUser";
 import { Tarjet } from "../components/Tarjet";
 import "../components/tarjet.css";
+import { useEffect, useState } from "react";
 
 export function Cart() {
-  const { cart, clearCart, addToCart, totalQuantity, total } = useCart();
+  const { cart, clearCart, addToCart, totalQuantity, total ,setTotal } = useCart(); 
+  const [number, setNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [name, setName] = useState("");
+  const [showCVV, setShowCVV] = useState(false);
+  const [error, setError] = useState("");
   const { user } = useUser();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(user.type === true){
+      setTotal(total + 10000);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
 
   const back = () => {
     clearCart();
     navigate("/items");
+  };
+
+  const handleSubmit = () => {
+    if (!number || !expiry || !cvv || !name) {
+      setError("Todos los campos son obligatorios.");
+      alert(error)
+      return;
+    }
+
+    const cleanNumber = number.replace(/\s/g, '');
+    if (cleanNumber.length !== 16) {
+      setError("El número de tarjeta debe tener exactamente 16 dígitos.");
+      alert(error)
+      return;
+    }
+
+    const cleanExpiry = expiry.replace('/', '');
+    if (cleanExpiry.length !== 4) {
+      setError("La fecha de expiración debe tener exactamente 4 dígitos (MMAA).");
+      alert(error)
+      return;
+    }
+
+    if (cvv.length !== 3) {
+      setError("El CVV debe tener exactamente 3 dígitos.");
+      alert(error)
+      return;
+    }
+
+    console.log(error)
+
+    console.log("Datos de la tarjeta:", { number, expiry, cvv, name });
+    setError(""); // Limpiar el error si todo está correcto
+    
+    next();
+
+  };
+
+  const clearCreditCardFields = () => {
+    setNumber("");
+    setExpiry("");
+    setCvv("");
+    setName("");
+    setError("");
   };
 
   const next = () => {
@@ -39,7 +98,7 @@ export function Cart() {
     <>
       <Header
         handleLeft={back}
-        handleRight={next}
+        handleRight={handleSubmit}
         nameleft={"cancelar"}
         nameRight={"confirmar"}
       />
@@ -66,7 +125,19 @@ export function Cart() {
           </div>
 
           <div className="cart-right">
-            <Tarjet />
+            <Tarjet
+             number={number}
+             setNumber={setNumber}
+             expiry={expiry}
+             setExpiry={setExpiry}
+             cvv={cvv}
+             setCvv={setCvv}
+             name={name}
+             setName={setName}
+             showCVV={showCVV}
+             setShowCVV={setShowCVV}
+             clearCreditCardFields={clearCreditCardFields}
+            />
           </div>
         </div>
       </div>

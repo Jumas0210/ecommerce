@@ -12,10 +12,10 @@ export function Details({totalQuantity, total}) {
         <p>Total de productos: {totalQuantity} </p>
         <p className="total">Total: {total} </p>
         <p>Nombre : {user.name}</p>
-        <p>direccion : {user.address}</p>
+        <p>Dirección : {user.address}</p>
         <p>
-          entrega a domicilio :{" "}
-          {user?.type === true ? <small>sí</small> : <small>no</small>}
+          Entrega a domicilio : 
+          {user?.type === true ? <small>Sí</small> : <small>No</small>}
         </p>
       </div>
     </>
